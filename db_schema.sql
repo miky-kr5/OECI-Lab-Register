@@ -16,6 +16,21 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `subjects`
+--
+
+DROP TABLE IF EXISTS `subjects`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `subjects` (
+  `subject_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100),
+  PRIMARY KEY (`subject_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+--
 -- Table structure for table `rooms`
 --
 
@@ -26,7 +41,7 @@ CREATE TABLE `rooms` (
   `room_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(5) DEFAULT NULL,
   PRIMARY KEY (`room_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,10 +56,12 @@ CREATE TABLE `schedules` (
   `description` varchar(30) DEFAULT NULL,
   `capacity` int(11) NOT NULL,
   `room_id` int(10) unsigned NOT NULL,
+  `subject_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`sched_id`),
   KEY `fk_room` (`room_id`),
-  CONSTRAINT `schedules_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+  CONSTRAINT `schedules_ibfk_1` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`room_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `schedules_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`subject_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -58,7 +75,7 @@ CREATE TABLE `sections` (
   `section_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `section` varchar(2) DEFAULT NULL,
   PRIMARY KEY (`section_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -76,12 +93,15 @@ CREATE TABLE `students` (
   `email` varchar(100) NOT NULL,
   `class_id` int(10) unsigned NOT NULL,
   `schedule_id` int(10) unsigned NOT NULL,
+  `subject_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`student_id`),
   KEY `fk_class` (`class_id`),
   KEY `fk_sched` (`schedule_id`),
+  KEY `fk_subject` (`subject_id`),
   CONSTRAINT `students_ibfk_1` FOREIGN KEY (`class_id`) REFERENCES `sections` (`section_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `students_ibfk_2` FOREIGN KEY (`schedule_id`) REFERENCES `schedules` (`sched_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=latin1;
+  CONSTRAINT `students_ibfk_2` FOREIGN KEY (`schedule_id`) REFERENCES `schedules` (`sched_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `students_ibfk_3` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`subject_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

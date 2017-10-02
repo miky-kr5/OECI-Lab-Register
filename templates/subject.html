@@ -1,0 +1,85 @@
+$def with (name, schedules, form, error_text)
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset=utf-8 />
+    <title>
+      ICARO :: Semestre 1-2017 - Inscripci&oacute;n de laboratorios.
+    </title>
+    <link rel=stylesheet type=text/css href=static/styles.css>
+    <link href=img/favicon.ico rel=icon type=image/x-icon />
+  </head>
+  <body>
+    <table id=main_table>
+      <tr>
+        <td id=main_cell>
+          <table>
+            <tr>
+              <td colspan=2>
+                <br>
+                <div class=text_style id=banner>
+                  <h1> $:name </h1>
+                  <h2> Inscripci&oacute;n de laboratorios :: Semestre 1-2017 </h2>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td colspan=2>
+                <hr />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class=text_style>
+                  <h3>
+                    Datos para la inscripci&oacute;n.
+                  </h3>
+                </div>                
+              </td>
+              <td>
+                <div class=text_style>
+                  <h3>Horarios disponibles</h3>
+                <div class=text_style>
+              </td>
+            </tr>
+            <tr>
+              <td style=vertical-align:top>
+                $if error_text is not None:
+                  <div class=text_style>
+                    <p class=warning> $:error_text </p>
+                  </div>
+                <form action="" method=post>
+                $:form.render()
+                </form>
+              </td>
+              <td>
+                <div style=font-variant:small-caps>
+                  <ul>
+                  $for sched in schedules:
+                    $if sched.sched_id > 1:
+                      <li>
+                        <b>$sched.description</b>
+                        <br/>
+                        Capacidad: <i>15</i>
+                        <br/>
+                        Disponibles: 
+                        <i>$sched.capacity</i>
+                        <br/>
+                        Sala: 
+                        $sched.name
+                      </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <div class=text_style>
+      <p style=text-align:center;>
+        Laboratorio ICARO, Escuela de Computaci&oacute;n, Facultad de Ciencias, Universidad Central de Venezuela.
+      </p>
+    </div>
+  </body>
+</html>
