@@ -4,12 +4,12 @@
 import pandas
 import web
 
-FILES = [("/home/miky/Documentos/listado_6001_C1.xls", 3),
-         ("/home/miky/Documentos/listado_6001_C2.xls", 3),
-         ("/home/miky/Documentos/listado_6001_C3.xls", 3),
-         ("/home/miky/Documentos/listado_6001_C4.xls", 3),
-         ("/home/miky/Documentos/listado_6004_C1.xls", 2),
-         ("/home/miky/Documentos/listado_6004_C2.xls", 2)]
+FILES = [("../listado_6001_C1.xls", 3),
+         ("../listado_6001_C2.xls", 3),
+         ("../listado_6001_C3.xls", 3),
+         ("../listado_6001_C4.xls", 3),
+         ("../listado_6004_C1.xls", 2),
+         ("../listado_6004_C2.xls", 2)]
 
 SHEET_NAME = "Sheet1"
 
@@ -21,7 +21,7 @@ SECCTION_IDS = {"C1": 1,
 QUERY = "INSERT INTO students(id_card, first_name, last_name, email, class_id, schedule_id, subject_id) VALUES($id, $fn, $ln, $ml, $cl, 1, $sj)"
 
 def main():
-    db = web.database(dbn = 'mysql', user = 'root', pw = 'Familylost9989*', db = 'labs')
+    db = web.database(dbn = 'mysql', user = '', pw = '', db = '')
 
     for f in FILES:
         xls = pandas.ExcelFile(f[0])

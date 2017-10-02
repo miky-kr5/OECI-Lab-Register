@@ -117,13 +117,18 @@ class Subject:
 		return render.subject(subject_name[0]['name'], schedules, form, None)
 
 	def POST(self):
+                cookie = web.cookies().get(COOKIE_SUBJECT)
+                
 		schedules = db.query(
 			"SELECT schedules.sched_id, schedules.description, schedules.capacity, rooms.name " +
 			"FROM schedules " +
 			"INNER JOIN rooms ON schedules.room_id = rooms.room_id " +
+                        "AND schedules.subject_id = " + str(cookie) + " " +
 			"ORDER BY schedules.sched_id ASC"
 			)
 
+                subject_name = db.query("SELECT name FROM subjects WHERE subject_id = " + str(cookie))
+                
 		form = self.form()
 
 		if not form.validates():
@@ -136,18 +141,25 @@ class Subject:
 		else:
 
 			student = db.query(
-				"SELECT schedule_id FROM students WHERE id_CARD = $id AND email = $email",
+				"SELECT schedule_id FROM students WHERE id_CARD = $id AND email = $email AND subject_id = $subject ",
 				vars = {
 					'id':str(form.d.cedula),
-					'email':form.d.email.upper()
+					'email':form.d.email.upper(),
+                                        'subject': int(cookie)
 					}
 				)
 
 			if len(student) == 0:
-				return render.index(schedules, self.form, "Cedula o email no encontrados.")
+                                scheds = _get_schedule_list()
+                                form = self.form()
+                                form.horario.args = scheds
+                                return render.subject(subject_name[0]['name'], schedules, form, "Cedula o email no encontrados para esta asignatura.")
 			else:
-				if student[0]["schedule_id"] != 8:
-					return render.index(schedules, self.form, "Estudiante con horario ya registrado.")
+				if student[0]["schedule_id"] != 1:
+                                        scheds = _get_schedule_list()
+                                        form = self.form()
+                                        form.horario.args = scheds
+					return render.subject(subject_name[0]['name'], schedules, form, "Estudiante con horario ya registrado.")
 				else:
 
 					sched = db.query(
@@ -156,7 +168,10 @@ class Subject:
 						)
 
 					if len(sched) == 0:
-						return render.index(schedules, self.form, "ERROR: Horario no encontrado.")
+                                                scheds = _get_schedule_list()
+                                                form = self.form()
+                                                form.horario.args = scheds
+						return render.subject(subject_name[0]['name'], schedules, form, "ERROR: Horario no encontrado.")
 					else:
 						x = 0
 						for s in sched:
@@ -167,7 +182,10 @@ class Subject:
 							x += 1
 
 						if cap <= 0:
-							return render.index(schedules, self.form, "Horario agotado.")
+                                                        scheds = _get_schedule_list()
+                                                        form = self.form()
+                                                        form.horario.args = scheds
+							return render.subject(subject_name[0]['name'], schedules, form, "Horario agotado.")
 						else:
 							db.query(
 								"UPDATE schedules SET capacity = $cap where sched_id = $id",
@@ -196,14 +214,21 @@ class Subject:
 								"ORDER BY schedules.sched_id ASC"
 								)
 
-							web.sendmail(
-								'',
-								form.d.email.lower(),
-								'OECI - Laboratorio Registrado',
-								'Ha registrado exitosamente el horario de laboratorio: ' + desc
-								)
+                                                        try:
+							        web.sendmail(
+								        '',
+								        form.d.email.lower(),
+								        'OECI - Laboratorio Registrado',
+								        'Ha registrado exitosamente el horario de laboratorio: ' + desc
+                                                                )
+                                                        except Exception:
+                                                                pass
 
-							return render.index(schedules, self.form, "Horario registrado exitosamente.")
+                                                        scheds = _get_schedule_list()
+                                                        form = self.form()
+                                                        form.horario.args = scheds
+
+							return render.subject(subject_name[0]['name'], schedules, form, "Horario registrado exitosamente.")
 
 if __name__ == "__main__":
 	web.config.smtp_server = ''
